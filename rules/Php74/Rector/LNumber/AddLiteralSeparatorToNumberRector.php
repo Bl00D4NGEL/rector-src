@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php74\Rector\LNumber;
 
-use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Scalar\DNumber;
@@ -14,6 +13,7 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -34,11 +34,14 @@ final class AddLiteralSeparatorToNumberRector extends AbstractRector implements 
      * @var string
      */
     public const LIMIT_VALUE = 'limit_value';
+
     /**
      * @var int
      */
     private const GROUP_SIZE = 3;
+
     private int $limitValue = 1_000_000;
+
     /**
      * @param mixed[] $configuration
      */
@@ -49,6 +52,7 @@ final class AddLiteralSeparatorToNumberRector extends AbstractRector implements 
 
         $this->limitValue = $limitValue;
     }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -84,6 +88,7 @@ CODE_SAMPLE
             ]
         );
     }
+
     /**
      * @return array<class-string<Node>>
      */
@@ -91,6 +96,7 @@ CODE_SAMPLE
     {
         return [LNumber::class, DNumber::class];
     }
+
     /**
      * @param LNumber|DNumber $node
      */
@@ -120,6 +126,12 @@ CODE_SAMPLE
 
         return $node;
     }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::LITERAL_SEPARATOR;
+    }
+
     private function shouldSkip(LNumber | DNumber $node, string $numericValueAsString): bool
     {
         /** @var int $startToken */
@@ -166,6 +178,7 @@ CODE_SAMPLE
         // too short
         return Strings::length($numericValueAsString) <= self::GROUP_SIZE;
     }
+
     /**
      * @return string[]
      */
@@ -182,9 +195,5 @@ CODE_SAMPLE
         }
 
         return $chunks;
-    }
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::LITERAL_SEPARATOR;
     }
 }

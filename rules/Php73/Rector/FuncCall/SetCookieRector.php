@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\String_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -23,7 +24,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @changelog https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie
  */
-final class SetCookieRector extends AbstractRector
+final class SetCookieRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
      * Conversion table from argument index to options name
@@ -93,12 +94,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! $this->isAtLeastPhpVersion(PhpVersionFeature::SETCOOKIE_ACCEPT_ARRAY_OPTIONS)) {
-            return true;
-        }
-
         $argsCount = count($funcCall->args);
-
         if ($argsCount <= 2) {
             return true;
         }
@@ -137,5 +133,10 @@ CODE_SAMPLE
 
         $newArgs[] = new Arg(new Array_($items));
         return $newArgs;
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::SETCOOKIE_ACCEPT_ARRAY_OPTIONS;
     }
 }

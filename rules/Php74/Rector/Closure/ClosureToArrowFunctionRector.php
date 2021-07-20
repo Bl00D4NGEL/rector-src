@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php74\Rector\Closure;
 
-use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
@@ -12,6 +11,7 @@ use PhpParser\Node\Expr\Closure;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Php74\NodeAnalyzer\ClosureArrowFunctionAnalyzer;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -87,6 +87,7 @@ CODE_SAMPLE
 
         return $arrowFunction;
     }
+
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::ARROW_FUNCTION;

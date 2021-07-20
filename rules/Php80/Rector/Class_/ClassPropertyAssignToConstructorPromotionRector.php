@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\Class_;
 
-use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\NullableType;
@@ -23,6 +22,7 @@ use Rector\Naming\VariableRenamer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyCandidateResolver;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -135,6 +135,11 @@ CODE_SAMPLE
         return $node;
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::PROPERTY_PROMOTION;
+    }
+
     private function processNullableType(Property $property, Param $param): void
     {
         if ($this->nodeTypeResolver->isNullableType($property)) {
@@ -174,9 +179,5 @@ CODE_SAMPLE
         }
 
         return $type instanceof Identifier && $this->isName($type, 'callable');
-    }
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::PROPERTY_PROMOTION;
     }
 }

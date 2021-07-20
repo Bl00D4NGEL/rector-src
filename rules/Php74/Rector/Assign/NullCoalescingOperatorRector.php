@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\Php74\Rector\Assign;
 
-use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp\Coalesce as AssignCoalesce;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -60,6 +60,7 @@ CODE_SAMPLE
 
         return new AssignCoalesce($node->var, $node->expr->right);
     }
+
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::NULL_COALESCE_ASSIGN;

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\FunctionLike;
 
-use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
@@ -25,6 +24,7 @@ use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\ValueObject\TypeKind;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodParamVendorLockResolver;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -96,6 +96,11 @@ CODE_SAMPLE
         $this->returnTagRemover->removeReturnTagIfUseless($phpDocInfo, $node);
 
         return $node;
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::UNION_TYPES;
     }
 
     private function refactorParamTypes(
@@ -209,9 +214,5 @@ CODE_SAMPLE
         }
 
         return $this->typeFactory->createMixedPassedOrUnionType($singleArrayTypes);
-    }
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::UNION_TYPES;
     }
 }

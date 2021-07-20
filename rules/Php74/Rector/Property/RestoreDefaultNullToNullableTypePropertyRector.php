@@ -71,6 +71,11 @@ CODE_SAMPLE
         return $node;
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::TYPED_PROPERTIES;
+    }
+
     private function shouldSkip(Property $property): bool
     {
         if (! $property->type instanceof NullableType) {
@@ -123,10 +128,5 @@ CODE_SAMPLE
         });
 
         return $isPropertyInitiated;
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::TYPED_PROPERTIES;
     }
 }

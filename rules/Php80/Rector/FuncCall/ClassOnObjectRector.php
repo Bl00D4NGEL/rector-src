@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\FuncCall;
 
-use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -76,6 +76,7 @@ CODE_SAMPLE
 
         return new ClassConstFetch($object, 'class');
     }
+
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::CLASS_ON_OBJECT;

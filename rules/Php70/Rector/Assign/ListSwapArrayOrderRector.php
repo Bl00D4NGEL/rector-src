@@ -75,6 +75,11 @@ final class ListSwapArrayOrderRector extends AbstractRector implements MinPhpVer
         return $node;
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::LIST_SWAP_ORDER;
+    }
+
     private function shouldSkipAssign(Assign $assign): bool
     {
         if (! $assign->var instanceof List_) {
@@ -83,10 +88,5 @@ final class ListSwapArrayOrderRector extends AbstractRector implements MinPhpVer
 
         // already converted
         return $assign->expr instanceof FuncCall && $this->isName($assign->expr, 'array_reverse');
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::LIST_SWAP_ORDER;
     }
 }

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Php74\Rector\FuncCall;
 
-use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -65,6 +65,7 @@ CODE_SAMPLE
 
         return $this->nodeFactory->createClassConstFetch('static', 'class');
     }
+
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::CLASSNAME_CONSTANT;
