@@ -363,11 +363,6 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
         return $this->betterStandardPrinter->print($node);
     }
 
-    protected function isAtLeastPhpVersion(int $version): bool
-    {
-        return $this->phpVersionProvider->isAtLeastPhpVersion($version);
-    }
-
     protected function mirrorComments(Node $newNode, Node $oldNode): void
     {
         $newNode->setAttribute(AttributeKey::PHP_DOC_INFO, $oldNode->getAttribute(AttributeKey::PHP_DOC_INFO));
