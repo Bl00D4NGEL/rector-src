@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\List_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -19,7 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * @changelog http://php.net/manual/en/migration70.incompatible.php#migration70.incompatible.variable-handling.list
  * @see \Rector\Tests\Php70\Rector\Assign\ListSwapArrayOrderRector\ListSwapArrayOrderRectorTest
  */
-final class ListSwapArrayOrderRector extends AbstractRector
+final class ListSwapArrayOrderRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function getRuleDefinition(): RuleDefinition
     {
@@ -76,15 +77,16 @@ final class ListSwapArrayOrderRector extends AbstractRector
 
     private function shouldSkipAssign(Assign $assign): bool
     {
-        if (! $this->isAtLeastPhpVersion(PhpVersionFeature::LIST_SWAP_ORDER)) {
-            return true;
-        }
-
         if (! $assign->var instanceof List_) {
             return true;
         }
 
         // already converted
         return $assign->expr instanceof FuncCall && $this->isName($assign->expr, 'array_reverse');
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::LIST_SWAP_ORDER;
     }
 }

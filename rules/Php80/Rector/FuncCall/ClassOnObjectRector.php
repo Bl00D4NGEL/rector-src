@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\FuncCall;
 
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -18,7 +19,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Php80\Rector\FuncCall\ClassOnObjectRector\ClassOnObjectRectorTest
  */
-final class ClassOnObjectRector extends AbstractRector
+final class ClassOnObjectRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function getRuleDefinition(): RuleDefinition
     {
@@ -63,10 +64,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->isAtLeastPhpVersion(PhpVersionFeature::CLASS_ON_OBJECT)) {
-            return null;
-        }
-
         if (! $this->nodeNameResolver->isName($node, 'get_class')) {
             return null;
         }
@@ -78,5 +75,9 @@ CODE_SAMPLE
         $object = $node->args[0]->value;
 
         return new ClassConstFetch($object, 'class');
+    }
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::CLASS_ON_OBJECT;
     }
 }

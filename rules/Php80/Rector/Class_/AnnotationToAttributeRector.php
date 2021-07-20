@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\Class_;
 
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use PhpParser\Node;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr\ArrowFunction;
@@ -37,13 +38,12 @@ use Webmozart\Assert\Assert;
  *
  * @see \Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\AnnotationToAttributeRectorTest
  */
-final class AnnotationToAttributeRector extends AbstractRector implements ConfigurableRectorInterface
+final class AnnotationToAttributeRector extends AbstractRector implements ConfigurableRectorInterface, MinPhpVersionInterface
 {
     /**
      * @var string
      */
     public const ANNOTATION_TO_ATTRIBUTE = 'annotation_to_attribute';
-
     /**
      * List of annotations that should not be unwrapped
      * @var string[]
@@ -54,19 +54,16 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
         'Symfony\Component\Validator\Constraints\Collection',
         'Symfony\Component\Validator\Constraints\Sequentially',
     ];
-
     /**
      * @var AnnotationToAttribute[]
      */
     private array $annotationsToAttributes = [];
-
     public function __construct(
         private PhpAttributeGroupFactory $phpAttributeGroupFactory,
         private ConvertedAnnotationToAttributeParentRemover $convertedAnnotationToAttributeParentRemover,
         private AttrGroupsFactory $attrGroupsFactory
     ) {
     }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Change annotation to attribute', [
@@ -105,7 +102,6 @@ CODE_SAMPLE
             ),
         ]);
     }
-
     /**
      * @return array<class-string<Node>>
      */
@@ -121,16 +117,11 @@ CODE_SAMPLE
             ArrowFunction::class,
         ];
     }
-
     /**
      * @param Class_|Property|Param|ClassMethod|Function_|Closure|ArrowFunction $node
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->isAtLeastPhpVersion(PhpVersionFeature::ATTRIBUTES)) {
-            return null;
-        }
-
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
         if (! $phpDocInfo instanceof PhpDocInfo) {
             return null;
@@ -156,7 +147,6 @@ CODE_SAMPLE
 
         return $node;
     }
-
     /**
      * @param array<string, AnnotationToAttribute[]> $configuration
      */
@@ -166,7 +156,6 @@ CODE_SAMPLE
         Assert::allIsInstanceOf($annotationsToAttributes, AnnotationToAttribute::class);
         $this->annotationsToAttributes = $annotationsToAttributes;
     }
-
     /**
      * @return AttributeGroup[]
      */
@@ -211,7 +200,6 @@ CODE_SAMPLE
 
         return $attributeGroups;
     }
-
     /**
      * @return AttributeGroup[]
      */
@@ -257,5 +245,9 @@ CODE_SAMPLE
         });
 
         return $this->attrGroupsFactory->create($doctrineTagAndAnnotationToAttributes);
+    }
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::ATTRIBUTES;
     }
 }

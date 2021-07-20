@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\If_;
@@ -20,7 +21,6 @@ final class SomeRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
-
     }
 
     public function getNodeTypes(): array
@@ -49,9 +49,7 @@ final class SomeRector extends AbstractRector
             return null;
         }
 
-        $this->removeNode($firstStmt);
-
-        if (! $firstStmt->cond instanceof Node\Expr\BooleanNot) {
+        if (! $firstStmt->cond instanceof BooleanNot) {
             return null;
         }
 
@@ -78,6 +76,10 @@ final class SomeRector extends AbstractRector
         $methodBuilder->addStmt($return);
 
         $node->stmts[] = $methodBuilder->getNode();
+
+        // remove the "IF"
+        $this->removeNode($firstStmt);
+
         return $node;
     }
 }

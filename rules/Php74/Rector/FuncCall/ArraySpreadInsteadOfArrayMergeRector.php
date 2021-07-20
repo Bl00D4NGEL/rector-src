@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php74\Rector\FuncCall;
 
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
@@ -27,7 +28,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Php74\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector\ArraySpreadInsteadOfArrayMergeRectorTest
  */
-final class ArraySpreadInsteadOfArrayMergeRector extends AbstractRector
+final class ArraySpreadInsteadOfArrayMergeRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private ArrayTypeAnalyzer $arrayTypeAnalyzer
@@ -86,10 +87,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->isAtLeastPhpVersion(PhpVersionFeature::ARRAY_SPREAD)) {
-            return null;
-        }
-
         if ($this->isName($node, 'array_merge')) {
             return $this->refactorArray($node);
         }
@@ -193,5 +190,9 @@ CODE_SAMPLE
         }
 
         return $this->nodeNameResolver->isName($expr, 'iterator_to_array');
+    }
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::ARRAY_SPREAD;
     }
 }

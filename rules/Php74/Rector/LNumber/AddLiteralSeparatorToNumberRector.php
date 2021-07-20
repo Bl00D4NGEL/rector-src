@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php74\Rector\LNumber;
 
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Scalar\DNumber;
@@ -26,21 +27,18 @@ use Webmozart\Assert\Assert;
  * Taking the most generic use case to the account: https://wiki.php.net/rfc/numeric_literal_separator#should_it_be_the_role_of_an_ide_to_group_digits
  * The final check should be done manually
  */
-final class AddLiteralSeparatorToNumberRector extends AbstractRector implements ConfigurableRectorInterface
+final class AddLiteralSeparatorToNumberRector extends AbstractRector implements ConfigurableRectorInterface, MinPhpVersionInterface
 {
     /**
      * @api
      * @var string
      */
     public const LIMIT_VALUE = 'limit_value';
-
     /**
      * @var int
      */
     private const GROUP_SIZE = 3;
-
     private int $limitValue = 1_000_000;
-
     /**
      * @param mixed[] $configuration
      */
@@ -51,7 +49,6 @@ final class AddLiteralSeparatorToNumberRector extends AbstractRector implements 
 
         $this->limitValue = $limitValue;
     }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -87,7 +84,6 @@ CODE_SAMPLE
             ]
         );
     }
-
     /**
      * @return array<class-string<Node>>
      */
@@ -95,16 +91,11 @@ CODE_SAMPLE
     {
         return [LNumber::class, DNumber::class];
     }
-
     /**
      * @param LNumber|DNumber $node
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->isAtLeastPhpVersion(PhpVersionFeature::LITERAL_SEPARATOR)) {
-            return null;
-        }
-
         $numericValueAsString = (string) $node->value;
         if ($this->shouldSkip($node, $numericValueAsString)) {
             return null;
@@ -129,7 +120,6 @@ CODE_SAMPLE
 
         return $node;
     }
-
     private function shouldSkip(LNumber | DNumber $node, string $numericValueAsString): bool
     {
         /** @var int $startToken */
@@ -176,7 +166,6 @@ CODE_SAMPLE
         // too short
         return Strings::length($numericValueAsString) <= self::GROUP_SIZE;
     }
-
     /**
      * @return string[]
      */
@@ -193,5 +182,9 @@ CODE_SAMPLE
         }
 
         return $chunks;
+    }
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::LITERAL_SEPARATOR;
     }
 }

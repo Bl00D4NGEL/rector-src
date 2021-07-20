@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\FunctionLike;
 
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
@@ -30,7 +31,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\Php80\Rector\FunctionLike\UnionTypesRector\UnionTypesRectorTest
  */
-final class UnionTypesRector extends AbstractRector
+final class UnionTypesRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private ReturnTagRemover $returnTagRemover,
@@ -86,10 +87,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
-            return null;
-        }
-
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         $this->refactorParamTypes($node, $phpDocInfo);
@@ -212,5 +209,9 @@ CODE_SAMPLE
         }
 
         return $this->typeFactory->createMixedPassedOrUnionType($singleArrayTypes);
+    }
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::UNION_TYPES;
     }
 }
