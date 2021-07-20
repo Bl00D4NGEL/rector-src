@@ -88,6 +88,11 @@ CODE_SAMPLE
         return $node;
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::SETCOOKIE_ACCEPT_ARRAY_OPTIONS;
+    }
+
     private function shouldSkip(FuncCall $funcCall): bool
     {
         if (! $this->isNames($funcCall, ['setcookie', 'setrawcookie'])) {
@@ -133,10 +138,5 @@ CODE_SAMPLE
 
         $newArgs[] = new Arg(new Array_($items));
         return $newArgs;
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::SETCOOKIE_ACCEPT_ARRAY_OPTIONS;
     }
 }

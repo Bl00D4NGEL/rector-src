@@ -64,13 +64,13 @@ CODE_SAMPLE
         return $this->isArrayAndDualCheckToAble->processBooleanOr($node, 'Countable', 'is_countable') ?: $node;
     }
 
-    private function shouldSkip(): bool
-    {
-        return ! $this->reflectionProvider->hasFunction(new Name('is_countable'), null);
-    }
-
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::IS_COUNTABLE;
+    }
+
+    private function shouldSkip(): bool
+    {
+        return ! $this->reflectionProvider->hasFunction(new Name('is_countable'), null);
     }
 }
