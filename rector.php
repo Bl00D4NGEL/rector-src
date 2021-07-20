@@ -47,8 +47,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services = $containerConfigurator->services();
 
-    $services->set(\Rector\Core\SomeRector::class);
-
     $services->set(InferParamFromClassMethodReturnRector::class)
         ->call('configure', [[
             InferParamFromClassMethodReturnRector::INFER_PARAMS_FROM_CLASS_METHOD_RETURNS => $configuration,
